@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Interactive Painting - Complete</title>
+    <title>Interactive Painting - Mobile Friendly</title>
     <style>
         * {
             margin: 0;
@@ -15,7 +15,7 @@
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
             background: #1a1a1a;
             color: white;
-            padding: 20px;
+            padding: 10px;
             min-height: 100vh;
         }
 
@@ -26,28 +26,29 @@
 
         h1 {
             text-align: center;
-            margin-bottom: 30px;
-            font-size: 2em;
+            margin-bottom: 20px;
+            font-size: clamp(1.5em, 4vw, 2em);
             color: #f0f0f0;
         }
 
         .instructions {
             background: #2a2a2a;
-            padding: 20px;
+            padding: 15px;
             border-radius: 8px;
-            margin-bottom: 30px;
+            margin-bottom: 20px;
             border-left: 4px solid #667eea;
         }
 
         .instructions h2 {
             color: #667eea;
             margin-bottom: 10px;
-            font-size: 1.3em;
+            font-size: clamp(1.1em, 3vw, 1.3em);
         }
 
         .instructions p {
             line-height: 1.6;
             color: #cccccc;
+            font-size: clamp(0.9em, 2.5vw, 1em);
         }
 
         .painting-container {
@@ -63,19 +64,28 @@
             box-shadow: 0 10px 50px rgba(0,0,0,0.5);
             border-radius: 4px;
             overflow: visible;
+            max-width: 100%;
         }
 
         #painting {
             display: block;
-            max-width: 100%;
+            width: 100%;
             height: auto;
             border-radius: 4px;
+            /* Disable image saving/sharing menu on mobile */
+            pointer-events: none;
+            user-select: none;
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            -webkit-touch-callout: none;
         }
 
         .hotspot {
             position: absolute;
-            width: 40px;
-            height: 40px;
+            /* Responsive sizing: 2% of image width, min 20px, max 40px */
+            width: clamp(20px, 2vw, 40px);
+            height: clamp(20px, 2vw, 40px);
             border-radius: 50%;
             background: rgba(255, 255, 255, 0.9);
             border: 2px solid rgba(0, 0, 0, 0.3);
@@ -83,6 +93,9 @@
             transition: none;
             box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
             transform: translate(-50%, -50%);
+            z-index: 1;
+            /* Re-enable pointer events on hotspots */
+            pointer-events: auto;
         }
 
         .hotspot:hover {
@@ -91,10 +104,17 @@
             z-index: 10;
         }
 
+        /* Mobile: tap instead of hover */
+        .hotspot:active {
+            background: rgba(255, 255, 255, 1);
+            border-color: rgba(0, 0, 0, 0.5);
+        }
+
         .hotspot-popup {
             position: absolute;
-            width: 300px;
-            height: 240px;
+            /* Responsive popup sizing */
+            width: clamp(200px, 40vw, 300px);
+            height: clamp(160px, 32vw, 240px);
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
@@ -104,9 +124,15 @@
             box-shadow: 0 8px 32px rgba(0, 0, 0, 0.6);
             overflow: hidden;
             z-index: 1000;
+            background: white;
         }
 
         .hotspot:hover .hotspot-popup {
+            opacity: 1;
+        }
+
+        /* Mobile: show on tap/active */
+        .hotspot:active .hotspot-popup {
             opacity: 1;
         }
 
@@ -115,6 +141,97 @@
             height: 100%;
             object-fit: cover;
             display: block;
+            /* Disable long-press menu on popup images */
+            user-select: none;
+            -webkit-user-select: none;
+            -webkit-touch-callout: none;
+        }
+
+        /* Tablet adjustments */
+        @media (max-width: 1024px) {
+            body {
+                padding: 15px;
+            }
+            
+            .instructions {
+                padding: 12px;
+            }
+        }
+
+        /* Mobile adjustments */
+        @media (max-width: 768px) {
+            body {
+                padding: 10px;
+            }
+
+            h1 {
+                margin-bottom: 15px;
+            }
+
+            .instructions {
+                padding: 10px;
+                margin-bottom: 15px;
+            }
+
+            .instructions h2 {
+                margin-bottom: 8px;
+            }
+
+            /* Smaller hotspots on very small screens */
+            .hotspot {
+                width: clamp(16px, 3vw, 30px);
+                height: clamp(16px, 3vw, 30px);
+                border-width: 1.5px;
+            }
+
+            /* Adjust popup for mobile - make it bigger relative to screen */
+            .hotspot-popup {
+                width: clamp(180px, 50vw, 280px);
+                height: clamp(144px, 40vw, 224px);
+            }
+        }
+
+        /* Very small mobile devices */
+        @media (max-width: 480px) {
+            .instructions p {
+                font-size: 0.85em;
+            }
+
+            .hotspot {
+                width: clamp(14px, 4vw, 25px);
+                height: clamp(14px, 4vw, 25px);
+            }
+
+            /* Make popup fill more of the screen on tiny devices */
+            .hotspot-popup {
+                width: clamp(160px, 60vw, 250px);
+                height: clamp(128px, 48vw, 200px);
+            }
+        }
+
+        /* Landscape mobile orientation */
+        @media (max-width: 896px) and (orientation: landscape) {
+            body {
+                padding: 5px;
+            }
+
+            h1 {
+                font-size: 1.3em;
+                margin-bottom: 10px;
+            }
+
+            .instructions {
+                padding: 8px;
+                margin-bottom: 10px;
+            }
+
+            .instructions h2 {
+                font-size: 1em;
+            }
+
+            .instructions p {
+                font-size: 0.85em;
+            }
         }
     </style>
 </head>
@@ -124,7 +241,7 @@
         
         <div class="instructions">
             <h2>How to Explore</h2>
-            <p>Hover over the white circles on the painting to reveal the source photographs that inspired each painted element. Each of the 82 hotspots will show you the original reference image.</p>
+            <p>Hover (or tap on mobile) over the white circles on the painting to reveal the source photographs that inspired each painted element. Each of the 81 hotspots will show you the original reference image.</p>
         </div>
 
         <div class="painting-container">
