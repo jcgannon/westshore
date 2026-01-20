@@ -1,6 +1,6 @@
 # Interactive Painting
 
-An interactive art experience featuring 82 hotspots that reveal source photographs when you hover over them.
+An interactive art experience featuring 81 hotspots that reveal source photographs when you hover over them.
 
 ## How to Deploy to GitHub Pages
 
