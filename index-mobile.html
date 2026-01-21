@@ -65,6 +65,10 @@
             border-radius: 4px;
             overflow: visible;
             max-width: 100%;
+            /* Disable context menu on wrapper */
+            -webkit-touch-callout: none;
+            -webkit-user-select: none;
+            user-select: none;
         }
 
         #painting {
@@ -72,6 +76,13 @@
             width: 100%;
             height: auto;
             border-radius: 4px;
+            /* Disable image saving/sharing menu on mobile */
+            pointer-events: none;
+            user-select: none;
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            -webkit-touch-callout: none;
         }
 
         .hotspot {
@@ -87,6 +98,8 @@
             box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
             transform: translate(-50%, -50%);
             z-index: 1;
+            /* Re-enable pointer events on hotspots */
+            pointer-events: auto;
         }
 
         .hotspot:hover {
@@ -132,6 +145,10 @@
             height: 100%;
             object-fit: cover;
             display: block;
+            /* Disable long-press menu on popup images */
+            user-select: none;
+            -webkit-user-select: none;
+            -webkit-touch-callout: none;
         }
 
         /* Tablet adjustments */
@@ -221,6 +238,35 @@
             }
         }
     </style>
+    <script>
+        // Additional protection against long-press menu on mobile
+        document.addEventListener('DOMContentLoaded', function() {
+            const painting = document.getElementById('painting');
+            const wrapper = document.querySelector('.painting-wrapper');
+            
+            // Prevent context menu on painting
+            painting.addEventListener('contextmenu', function(e) {
+                e.preventDefault();
+                return false;
+            });
+            
+            // Prevent long-press on painting
+            painting.addEventListener('touchstart', function(e) {
+                // Allow touch to pass through to hotspots
+                if (!e.target.classList.contains('hotspot')) {
+                    e.target.style.webkitTouchCallout = 'none';
+                }
+            });
+            
+            // Prevent context menu on wrapper
+            wrapper.addEventListener('contextmenu', function(e) {
+                if (e.target === painting || e.target === wrapper) {
+                    e.preventDefault();
+                    return false;
+                }
+            });
+        });
+    </script>
 </head>
 <body>
     <div class="container">
@@ -233,7 +279,7 @@
 
         <div class="painting-container">
             <div class="painting-wrapper">
-                <img id="painting" src="painting-81.jpg" alt="Interactive Painting">
+                <img id="painting" src="painting-81.jpg" alt="Interactive Painting" ondragstart="return false;" oncontextmenu="return false;">
                 
                 <div class="hotspot" data-id="1" style="left: 4.3%; top: 18.2%;"><div class="hotspot-popup"><img src="hover-01.jpg" alt="Source photo 1"></div></div>
                 <div class="hotspot" data-id="2" style="left: 8.9%; top: 13.1%;"><div class="hotspot-popup"><img src="hover-02.jpg" alt="Source photo 2"></div></div>
